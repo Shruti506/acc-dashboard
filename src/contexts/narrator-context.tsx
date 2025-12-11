@@ -28,7 +28,6 @@ export function NarratorProvider({
   const [enabled, setEnabled] = useState(defaultEnabled)
   const [speechAvailable, setSpeechAvailable] = useState(false)
 
-  // Check if speech synthesis is available on mount
   useEffect(() => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       setSpeechAvailable(true)
@@ -39,7 +38,6 @@ export function NarratorProvider({
     (text: string) => {
       if (!enabled || !speechAvailable || typeof window === "undefined") return
 
-      // Cancel any ongoing speech
       window.speechSynthesis.cancel()
 
       const utterance = new SpeechSynthesisUtterance(text)
