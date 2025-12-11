@@ -7,11 +7,19 @@ import "./globals.css"
 import { ClientFocusManager } from "@/components/client-focus-manager"
 import { SkipToContent } from "@/components/skip-to-content"
 
-const _poppins = Poppins({
+const poppins = Poppins({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
+  display: "swap",
+  preload: true,
 })
-const _robotoMono = Roboto_Mono({ subsets: ["latin"] })
+
+const robotoMono = Roboto_Mono({
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700"],
+  display: "swap",
+  preload: true,
+})
 
 export const metadata: Metadata = {
   title: "Accessible Dashboard - User Management",

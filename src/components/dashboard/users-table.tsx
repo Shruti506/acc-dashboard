@@ -47,7 +47,6 @@ const roleConfig = {
 
 export function UsersTable({ users, onEdit, onDelete }: UsersTableProps) {
 
-  // 🔊 Build FULL TABLE narration text
   const tableNarration = users.length
     ? users
       .map(
@@ -63,7 +62,6 @@ export function UsersTable({ users, onEdit, onDelete }: UsersTableProps) {
       tabIndex={0}
       aria-label="Users table with user names, emails, roles, status, and activity"
     >
-      {/* 🔊 Hidden region to narrate whole table automatically */}
       <div aria-live="polite" aria-atomic="true" className="sr-only">
         {tableNarration}
       </div>
