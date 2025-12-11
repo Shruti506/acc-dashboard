@@ -1,10 +1,10 @@
-/* @import "tailwindcss";
+@import "tailwindcss";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
 /* Applied new theme from user's attachment with Poppins font */
-/*:root {
+:root {
   --background: oklch(0.9809 0.0025 228.7836);
   --foreground: oklch(0.3211 0 0);
   --card: oklch(1.0 0 0);
@@ -143,9 +143,9 @@
   body {
     @apply bg-background text-foreground;
   }
-} */
+}
 
-@import "tailwindcss";
+/* @import "tailwindcss";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -265,4 +265,4 @@
   body {
     @apply bg-background text-foreground;
   }
-}
+} */

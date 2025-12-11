@@ -29,8 +29,18 @@ export function UserFilters({
   onResetFilters,
 }: UserFiltersProps) {
   const { onFocus: onSearchFocus } = useFocusNarrator("Search input. Type to search users by name or email")
-  const { onFocus: onRoleFocus } = useFocusNarrator("Role filter dropdown. Select a role to filter users")
-  const { onFocus: onStatusFocus } = useFocusNarrator("Status filter dropdown. Select a status to filter users")
+  const { onFocus: onRoleFocus } = useFocusNarrator(
+    roleFilter && roleFilter !== "all"
+      ? `Role: ${roleFilter}. Select to change.`
+      : "Role:  Select a role."
+  );
+
+  const { onFocus: onStatusFocus } = useFocusNarrator(
+    statusFilter && statusFilter !== "all"
+      ? `Status: ${statusFilter}. Select to change.`
+      : "Status:  Select a status."
+  );
+
   const { onFocus: onApplyFocus } = useFocusNarrator("Apply filters button")
   const { onFocus: onResetFocus } = useFocusNarrator("Reset filters button. Clears all filter selections")
 
