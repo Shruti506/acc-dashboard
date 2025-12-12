@@ -1,191 +1,26 @@
-// components/dashboard/dashboard_client.tsx
 "use client"
 
-import { useState, useMemo, useCallback, useRef } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useUserStore } from "@/contexts/user-context"
+import { StatsCards } from "./stats-cards"
 import { Separator } from "@/components/ui/separator"
-import { User, UsersTable } from "./users-table";
-import { StatsCards } from "./stats-cards";
-import { AddUserForm } from "./add-user-form";
-import { UserFilters } from "./user-filters";
-import { Pagination } from "./pagination";
-import { DeleteConfirmation } from "./delete-confirmation";
-
-const initialUsers: User[] = [
-    { id: "1", name: "Alice Johnson", email: "alice@example.com", role: "admin", status: "active", lastActive: "2 hours ago" },
-    { id: "2", name: "Bob Smith", email: "bob@example.com", role: "editor", status: "active", lastActive: "5 hours ago" },
-    { id: "3", name: "Carol Williams", email: "carol@example.com", role: "viewer", status: "inactive", lastActive: "3 days ago" },
-    { id: "4", name: "David Brown", email: "david@example.com", role: "editor", status: "pending", lastActive: "1 day ago" },
-    { id: "5", name: "Emma Davis", email: "emma@example.com", role: "viewer", status: "active", lastActive: "30 mins ago" },
-    { id: "6", name: "Frank Miller", email: "frank@example.com", role: "admin", status: "active", lastActive: "1 hour ago" },
-    { id: "7", name: "Grace Wilson", email: "grace@example.com", role: "viewer", status: "inactive", lastActive: "1 week ago" },
-    { id: "8", name: "Henry Taylor", email: "henry@example.com", role: "editor", status: "active", lastActive: "4 hours ago" },
-    { id: "9", name: "Ivy Anderson", email: "ivy@example.com", role: "viewer", status: "pending", lastActive: "2 days ago" },
-    { id: "10", name: "Jack Thomas", email: "jack@example.com", role: "viewer", status: "active", lastActive: "15 mins ago" },
-    { id: "11", name: "Kate Jackson", email: "kate@example.com", role: "editor", status: "active", lastActive: "6 hours ago" },
-    { id: "12", name: "Leo White", email: "leo@example.com", role: "viewer", status: "inactive", lastActive: "2 weeks ago" },
-];
-
-const ITEMS_PER_PAGE = 5
+import { ChartAreaInteractive } from "./chart-area-interactive"
 
 export default function DashboardContent() {
-    const [users, setUsers] = useState<User[]>(initialUsers)
-    const [searchTerm, setSearchTerm] = useState("")
-    const [roleFilter, setRoleFilter] = useState("all")
-    const [statusFilter, setStatusFilter] = useState("all")
-    const [currentPage, setCurrentPage] = useState(1)
-    const [statusMessage, setStatusMessage] = useState("")
-    const [userToDelete, setUserToDelete] = useState<User | null>(null)
-    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const { stats } = useUserStore()
 
-    const deleteButtonRef = useRef<HTMLButtonElement>(null)
+  return (
+    <>
+      <section aria-labelledby="page-stats">
+        <StatsCards
+          totalUsers={stats.total}
+          activeUsers={stats.active}
+          inactiveUsers={stats.inactive}
+          pendingUsers={stats.pending}
+        />
+      </section>
 
-    // FILTER LOGIC
-    const filteredUsers = useMemo(() => {
-        return users.filter((user) => {
-            const matchesSearch =
-                user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                user.email.toLowerCase().includes(searchTerm.toLowerCase())
-            const matchesRole = roleFilter === "all" || user.role === roleFilter
-            const matchesStatus = statusFilter === "all" || user.status === statusFilter
-            return matchesSearch && matchesRole && matchesStatus
-        })
-    }, [users, searchTerm, roleFilter, statusFilter])
-
-    // PAGINATION
-    const paginatedUsers = useMemo(() => {
-        const start = (currentPage - 1) * ITEMS_PER_PAGE
-        return filteredUsers.slice(start, start + ITEMS_PER_PAGE)
-    }, [filteredUsers, currentPage])
-
-    const totalPages = Math.ceil(filteredUsers.length / ITEMS_PER_PAGE)
-
-    // STATS
-    const stats = useMemo(
-        () => ({
-            total: users.length,
-            active: users.filter((u) => u.status === "active").length,
-            inactive: users.filter((u) => u.status === "inactive").length,
-            pending: users.filter((u) => u.status === "pending").length,
-        }),
-        [users],
-    )
-
-    // HANDLERS
-    const handleApplyFilters = useCallback(() => {
-        setCurrentPage(1)
-        setStatusMessage(`Filters applied. Showing ${filteredUsers.length} result${filteredUsers.length !== 1 ? "s" : ""}.`)
-    }, [filteredUsers.length])
-
-    const handleResetFilters = useCallback(() => {
-        setSearchTerm("")
-        setRoleFilter("all")
-        setStatusFilter("all")
-        setCurrentPage(1)
-        setStatusMessage("Filters reset. Showing all users.")
-    }, [])
-
-    const handleAddUser = useCallback((userData: { name: string; email: string; role: string }) => {
-        const newUser: User = {
-            id: String(Date.now()),
-            name: userData.name,
-            email: userData.email,
-            role: userData.role as User["role"],
-            status: "pending",
-            lastActive: "Just now",
-        }
-        setUsers((prev) => [newUser, ...prev])
-        setStatusMessage(`${userData.name} has been added successfully.`)
-    }, [])
-
-    const handleEditUser = useCallback((user: User) => {
-        setStatusMessage(`Opening edit form for ${user.name}`)
-    }, [])
-
-    const handleDeleteClick = useCallback((user: User) => {
-        setUserToDelete(user)
-        setDeleteDialogOpen(true)
-    }, [])
-
-    const handleDeleteConfirm = useCallback(() => {
-        if (userToDelete) {
-            setUsers((prev) => prev.filter((u) => u.id !== userToDelete.id))
-            setStatusMessage(`${userToDelete.name} has been deleted.`)
-            setUserToDelete(null)
-            setDeleteDialogOpen(false)
-        }
-    }, [userToDelete])
-
-    const handlePageChange = useCallback(
-        (page: number) => {
-            setCurrentPage(page)
-            setStatusMessage(`Navigated to page ${page} of ${totalPages}`)
-            document.getElementById("users-table-section")?.scrollIntoView({ behavior: "smooth" })
-        },
-        [totalPages],
-    )
-
-    return (
-        <>
-            <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
-                {statusMessage}
-            </div>
-
-            <section aria-labelledby="page-stats">
-                <StatsCards
-                    totalUsers={stats.total}
-                    activeUsers={stats.active}
-                    inactiveUsers={stats.inactive}
-                    pendingUsers={stats.pending}
-                />
-            </section>
-
-            <Separator />
-
-            <section id="users-table-section" aria-labelledby="users-heading">
-                <Card>
-                    <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                        <div>
-                            <CardTitle id="users-heading">Users</CardTitle>
-                            <CardDescription>Manage user accounts, roles, and permissions.</CardDescription>
-                        </div>
-                        <AddUserForm onAddUser={handleAddUser} />
-                    </CardHeader>
-
-                    <CardContent className="space-y-6">
-                        <UserFilters
-                            searchTerm={searchTerm}
-                            onSearchChange={setSearchTerm}
-                            roleFilter={roleFilter}
-                            onRoleChange={setRoleFilter}
-                            statusFilter={statusFilter}
-                            onStatusChange={setStatusFilter}
-                            onApplyFilters={handleApplyFilters}
-                            onResetFilters={handleResetFilters}
-                        />
-
-                        <UsersTable users={paginatedUsers} onEdit={handleEditUser} onDelete={handleDeleteClick} />
-
-                        {filteredUsers.length > 0 && (
-                            <Pagination
-                                currentPage={currentPage}
-                                totalPages={totalPages}
-                                totalItems={filteredUsers.length}
-                                itemsPerPage={ITEMS_PER_PAGE}
-                                onPageChange={handlePageChange}
-                            />
-                        )}
-                    </CardContent>
-                </Card>
-            </section>
-
-            <DeleteConfirmation
-                user={userToDelete}
-                open={deleteDialogOpen}
-                onOpenChange={setDeleteDialogOpen}
-                onConfirm={handleDeleteConfirm}
-                triggerRef={deleteButtonRef}
-            />
-        </>
-    )
+      <Separator />
+      <ChartAreaInteractive />
+    </>
+  )
 }

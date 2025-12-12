@@ -22,7 +22,7 @@ interface DeleteConfirmationProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onConfirm: () => void
-   triggerRef?: React.RefObject<HTMLButtonElement | null>
+  triggerRef?: React.RefObject<HTMLButtonElement | null>
 }
 
 export function DeleteConfirmation({ user, open, onOpenChange, onConfirm, triggerRef }: DeleteConfirmationProps) {
@@ -65,6 +65,10 @@ export function DeleteConfirmation({ user, open, onOpenChange, onConfirm, trigge
         aria-labelledby="delete-dialog-title"
         aria-describedby="delete-dialog-description"
       >
+        <AlertDialogTitle className="sr-only">
+          Delete User
+        </AlertDialogTitle>
+
         <AlertDialogHeader>
           <div className="flex items-center gap-3">
             <div
@@ -73,7 +77,10 @@ export function DeleteConfirmation({ user, open, onOpenChange, onConfirm, trigge
             >
               <AlertTriangle className="h-5 w-5 text-destructive" />
             </div>
-            <AlertDialogTitle id="delete-dialog-title">Delete User</AlertDialogTitle>
+
+            <span className="text-lg font-semibold" aria-hidden="true">
+              Delete User
+            </span>
           </div>
           <AlertDialogDescription id="delete-dialog-description">
             Are you sure you want to delete <strong>{user.name}</strong>? This action cannot be undone and will
