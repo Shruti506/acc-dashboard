@@ -1,8 +1,11 @@
+import UserDataTable from '@/components/users/user-data-table'
 import React from 'react'
 
 const Users = () => {
   return (
-    <div>Users Page</div>
+    <div>
+      <UserDataTable />
+    </div>
   )
 }
 

@@ -55,7 +55,6 @@ export function UserFilters({
       aria-label="Filter users"
     >
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {/* Search Input */}
         <div className="space-y-2">
           <Label htmlFor="search-users" className="text-sm font-medium">
             Search
@@ -82,8 +81,7 @@ export function UserFilters({
           </p>
         </div>
 
-        {/* Role Filter */}
-        <div className="space-y-2">
+        <div className="space-y-2 w-full">
           <Label htmlFor="role-filter" className="text-sm font-medium">
             Role
           </Label>
@@ -91,7 +89,7 @@ export function UserFilters({
             <SelectTrigger
               id="role-filter"
               onFocus={onRoleFocus}
-              className="focus-visible:ring-2 focus-visible:ring-ring"
+              className="w-full focus-visible:ring-2 focus-visible:ring-ring"
               aria-label="Filter by role"
             >
               <SelectValue placeholder="All roles" />
@@ -105,7 +103,6 @@ export function UserFilters({
           </Select>
         </div>
 
-        {/* Status Filter */}
         <div className="space-y-2">
           <Label htmlFor="status-filter" className="text-sm font-medium">
             Status
@@ -114,7 +111,7 @@ export function UserFilters({
             <SelectTrigger
               id="status-filter"
               onFocus={onStatusFocus}
-              className="focus-visible:ring-2 focus-visible:ring-ring"
+              className="w-full focus-visible:ring-2 focus-visible:ring-ring"
               aria-label="Filter by status"
             >
               <SelectValue placeholder="All statuses" />
@@ -128,28 +125,32 @@ export function UserFilters({
           </Select>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex items-end gap-2">
-          <Button
-            type="submit"
-            onFocus={onApplyFocus}
-            className="flex-1 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-          >
-            <Filter className="mr-2 h-4 w-4" aria-hidden="true" />
-            <span>Apply</span>
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onResetFilters}
-            onFocus={onResetFocus}
-            className="focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-transparent"
-            aria-label="Reset all filters"
-          >
-            <RotateCcw className="h-4 w-4 sm:mr-2" aria-hidden="true" />
-            <span className="hidden sm:inline">Reset</span>
-          </Button>
+        <div className="space-y-3">
+          <Label className="opacity-0 select-none">Actions</Label>
+
+          <div className="flex items-center gap-4">
+            <Button
+              type="submit"
+              className="flex-1 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              onFocus={onApplyFocus}>
+              <Filter className="mr-2 h-4 w-4" />
+              Apply
+            </Button>
+
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onResetFilters}
+              onFocus={onResetFocus}
+              className="focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-transparent"
+              aria-label="Reset filters"
+            >
+              <RotateCcw className="h-4 w-4 mr-2" />
+              Reset
+            </Button>
+          </div>
         </div>
+
       </div>
     </form>
   )
